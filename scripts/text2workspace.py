@@ -10,6 +10,11 @@ from HiggsAnalysis.CombinedLimit.ModelTools import *
 from HiggsAnalysis.CombinedLimit.PhysicsModel import *
 from HiggsAnalysis.CombinedLimit.ShapeTools import *
 
+<<<<<<< HEAD
+=======
+ROOT.gSystem.Load('../../build/libHiggsAnalysisCombinedLimit.so')
+
+>>>>>>> 1d5af699 (fix path for shared library in t2w)
 # import ROOT with a fix to get batch mode (http://root.cern.ch/phpBB3/viewtopic.php?t=3198)
 argv.append("-b-")
 
