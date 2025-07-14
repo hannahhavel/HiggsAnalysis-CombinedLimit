@@ -2,6 +2,8 @@ imax    1 number of bins
 jmax    4 number of processes minus 1
 kmax    * number of nuisance parameters
 --------------------------------------------------------------------------------
+shapes * * datacard_part2.shapes.root signal_region/$PROCESS signal_region/$PROCESS_$SYSTEMATIC
+shapes bbHtautau * datacard_part2.shapes.root signal_region/$PROCESS$MASS signal_region/$PROCESS$MASS_$SYSTEMATIC
 --------------------------------------------------------------------------------
 bin          signal_region   
 observation  3416.0          
@@ -20,4 +22,10 @@ lumi_13TeV                   lnN     1.025           1.025           1.025      
 norm_jetFakes                lnN     -               -               -               1.2             -               
 xsec_Ztautau                 lnN     -               -               1.04            -               -               
 xsec_diboson                 lnN     -               1.05            -               -               -               
-xsec_ttbar                   lnN     1.06            -               -               -               -               
+xsec_ttbar                   lnN     1.06            -               -               -               - 
+top_pt_ttbar_shape             shape   1       -       -       -       -
+CMS_scale_t_1prong0pi0_13TeV   shape   1       1       1       -       1
+CMS_scale_t_1prong1pi0_13TeV   shape   1       1       1       -       1
+CMS_scale_t_3prong0pi0_13TeV   shape   1       1       1       -       1
+CMS_eff_t_highpt               shape   1       1       1       -       1
+              
