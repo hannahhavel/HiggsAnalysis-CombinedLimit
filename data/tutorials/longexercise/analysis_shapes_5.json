@@ -1,4 +1,10 @@
 {
+  "metadata": {
+    "hs3_version": "0.2",
+    "source_file": "datacard_part2.shapes.root",
+    "format": "hs3",
+    "analysis_type": "shape"
+  },
   "histograms": {
     "data_obs": {
       "name": "data_obs",
@@ -1178,10 +1184,5 @@
         }
       }
     }
-  },
-  "metadata": {
-    "source_file": "datacard_part2.shapes.root",
-    "format": "hs3",
-    "analysis_type": "shape"
   }
 }

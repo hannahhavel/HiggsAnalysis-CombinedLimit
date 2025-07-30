@@ -2,7 +2,7 @@
 
 import ROOT #ROOT library for histogram handling
 import json #JSON file operations
-import sys 
+import sys
 import os
 import re
 
@@ -80,12 +80,13 @@ def extract_histograms_to_json(input_file, output_file=None):
 
         #output structure (schema)
         output_data = {
-            "histograms": {},
             "metadata": {
+                "hs3_version": "0.2",  #added to fix error
                 "source_file": os.path.basename(input_file),
                 "format": "hs3",
                 "analysis_type": "shape"
-            }
+            },
+            "histograms": {}
         }
 
         #access histograms directory
@@ -95,7 +96,7 @@ def extract_histograms_to_json(input_file, output_file=None):
             raise RuntimeError(f"Directory '{dir_name}' not found")
 
         #scan histograms
-        systematics_map = {} 
+        systematics_map = {}
         total_histograms = 0 #TH1-derived objects
         nominal_count = 0 #non-systematic histograms
         systematic_count = 0 #'up' and 'down' variations
@@ -138,9 +139,8 @@ def extract_histograms_to_json(input_file, output_file=None):
             json.dump(output_data, f, indent=2)
 
         #print summary
-        #tot_systematics = sum(len(h["systematics"]) for h in output_data["histograms"].values())
         print(f"\nComplete:")
-        print(f"Total TH1 objects found: {total_histograms}") #comparable to original .root 
+        print(f"Total TH1 objects found: {total_histograms}")
         print(f"Nominal histograms: {nominal_count}")
         print(f"Systematic variations: {systematic_count}")
         print(f"Output saved to: {output_file}")
@@ -154,11 +154,9 @@ def extract_histograms_to_json(input_file, output_file=None):
         if 'root_file' in locals():
             root_file.Close() #close file handle
 
-#usage statement
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python dump_histograms.py <input.root> [output.json]")
+        print("Usage: python dump_workspace_to_jsonpy <input.root> [output.json]")
         sys.exit(1)
 
     extract_histograms_to_json(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)
-
