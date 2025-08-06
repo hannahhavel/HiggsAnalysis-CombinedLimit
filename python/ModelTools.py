@@ -234,16 +234,41 @@ class ModelBuilder(ModelBuilderBase):
                         raise RuntimeError(f"No parameter '{rp}' found for extArg in workspace {wsn} from file {fin}")
                     self.out.safe_import(wstmp.arg(rp), *importargs)
                 else:
-                    fitmp = ROOT.TFile.Open(fin)
-                    if not fitmp:
-                        raise RuntimeError("No File '%s' found for extArg" % fin)
-                    wstmp = fitmp.Get(wsn)
-                    if not wstmp:
-                        raise RuntimeError(f"Workspace '{wsn}' not in file {fin}")
-                    if not wstmp.arg(rp):
-                        raise RuntimeError(f"No parameter '{rp}' found for extArg in workspace {wsn} from file {fin}")
-                    self.out.safe_import(wstmp.arg(rp), *importargs)
-                    open_files[(fin, wsn)] = wstmp
+                    print(f"attempting to open: {fin}")  #debugging, starting process
+                    try:
+                        if fin.endswith('.json'):  #handling for JSON
+                            print(f"loading JSON workspace from {fin}")
+
+                            #verify ROOT has JSON support compiled in
+                            if not hasattr(ROOT, 'RooJSONFactoryWSTool'):
+                                raise RuntimeError("ROOT compiled without RooFit HS3 support") #error with RooJSONFactoryWSTool
+                            
+                            #temporary workspace for JSON import
+                            wstmp = ROOT.RooWorkspace("json_ws")
+
+                            #start JSON import
+                            if not ROOT.RooJSONFactoryWSTool(wstmp).importJSON(fin):
+                                raise RuntimeError(f"failed to import JSON {fin}")
+                            #sucess
+                            print(f"successfully loaded JSON workspace with {len(wstmp.allData())} objects")
+
+
+                        else:  #original handling for ROOT
+                            print(f"loading ROOT file {fin}")
+                            fitmp = ROOT.TFile.Open(fin)
+                            if not fitmp:
+                                raise RuntimeError("no File '%s' found for extArg" % fin)
+                            wstmp = fitmp.Get(wsn)
+                            if not wstmp:
+                                raise RuntimeError(f"workspace '{wsn}' not in file {fin}")
+                        
+                        if not wstmp.arg(rp):
+                            raise RuntimeError(f"no parameter '{rp}' found for extArg in workspace {wsn} from file {fin}")
+                        self.out.safe_import(wstmp.arg(rp), *importargs)
+                        open_files[(fin, wsn)] = wstmp
+                    except Exception as e:
+                        print(f"ERROR loading {fin}: {str(e)}")  #added error (for all others)
+                        raise
             else:
                 param_range = ""
                 param_val = self.DC.extArgs[rp][-1]

@@ -1,0 +1,13 @@
+imax 1
+jmax 1
+kmax *
+---------------
+shapes * * analysis_shapes_7.json $PROCESS $PROCESS_$SYSTEMATIC
+---------------
+bin bin1
+observation 10
+------------------------------
+bin             bin1
+process         signal
+process         0
+rate            5
