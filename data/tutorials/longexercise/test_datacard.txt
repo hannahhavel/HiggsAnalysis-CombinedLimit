@@ -2,12 +2,12 @@ imax 1
 jmax 1
 kmax *
 ---------------
-shapes * * analysis_shapes_7.json $PROCESS $PROCESS_$SYSTEMATIC
+shapes * * analysis_shapes_7.json $PROCESS 
 ---------------
 bin bin1
 observation 10
 ------------------------------
-bin             bin1
-process         signal
-process         0
-rate            5
+bin             bin1 		bin1
+process         background	signal
+process         1		0
+rate            -1		-1		
