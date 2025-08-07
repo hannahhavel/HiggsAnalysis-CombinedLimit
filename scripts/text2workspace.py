@@ -11,6 +11,12 @@ from HiggsAnalysis.CombinedLimit.ModelTools import *
 from HiggsAnalysis.CombinedLimit.PhysicsModel import *
 from HiggsAnalysis.CombinedLimit.ShapeTools import *
 
+
+#testing 8/6 (from ldd):
+ROOT.gSystem.Load("/cvmfs/sft.cern.ch/lcg/views/dev4/latest/x86_64-el9-gcc13-opt/lib/libRooFitCore.so")
+ROOT.gSystem.Load("/cvmfs/sft.cern.ch/lcg/views/dev4/latest/x86_64-el9-gcc13-opt/lib/libRooFit.so")
+ROOT.gSystem.Load("../../build/libHiggsAnalysisCombinedLimit.so")
+
 #commit: fix path for shared library
 ROOT.gSystem.Load('../../build/libHiggsAnalysisCombinedLimit.so')
 

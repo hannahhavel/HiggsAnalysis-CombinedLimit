@@ -257,17 +257,17 @@ class ModelBuilder(ModelBuilderBase):
                             print(f"loading ROOT file {fin}")
                             fitmp = ROOT.TFile.Open(fin)
                             if not fitmp:
-                                raise RuntimeError("no File '%s' found for extArg" % fin)
+                                raise RuntimeError("No File '%s' found for extArg" % fin)
                             wstmp = fitmp.Get(wsn)
                             if not wstmp:
-                                raise RuntimeError(f"workspace '{wsn}' not in file {fin}")
+                                raise RuntimeError(f"Workspace '{wsn}' not in file {fin}")
                         
                         if not wstmp.arg(rp):
-                            raise RuntimeError(f"no parameter '{rp}' found for extArg in workspace {wsn} from file {fin}")
+                            raise RuntimeError(f"No parameter '{rp}' found for extArg in workspace {wsn} from file {fin}")
                         self.out.safe_import(wstmp.arg(rp), *importargs)
                         open_files[(fin, wsn)] = wstmp
                     except Exception as e:
-                        print(f"ERROR loading {fin}: {str(e)}")  #added error (for all others)
+                        print(f"error loading {fin}: {str(e)}")  #added error (for all others)
                         raise
             else:
                 param_range = ""

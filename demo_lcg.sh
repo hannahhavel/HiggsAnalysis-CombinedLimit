@@ -23,7 +23,9 @@ python3 -m pip install -e .
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=../install -DINSTALL_PYTHON=FALSE ..
-make install -j4
+#make install -j4
+make install -j16
+#make install -j$(nproc) #use all available cores
 cd ..
 
 # Run the following combine "hello world" example
