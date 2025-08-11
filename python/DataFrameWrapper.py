@@ -1,7 +1,9 @@
+#DataFrameWrapper.py
 import numpy as np
 import pandas as pd
 
 import ROOT
+import json #for patch
 
 
 class DataFrameWrapper:
@@ -31,9 +33,24 @@ class DataFrameWrapper:
         if self.ext == ".csv":
             df = pd.read_csv(self.path, *self.read_args, **self.read_kwargs)
             return df.set_index(df.columns.tolist()[:-2])
+        #patch here: unwrap "data" if present
         elif self.ext == ".json":
             df = pd.read_json(self.path, *self.read_args, **self.read_kwargs)
-            return df.set_index(df.columns.tolist()[:-2])
+            with open(self.path) as f:
+                obj = json.load(f)
+
+            #if the file is in HS3 format with metadata
+            if isinstance(obj, dict) and "data" in obj and isinstance(obj["data"], list):
+                df = pd.DataFrame(obj["data"])
+            else:
+                df = pd.read_json(self.path, *self.read_args, **self.read_kwargs)
+
+            index_cols = ["name", "type", "axis_name", "axis_low_edge", "axis_high_edge", "bin"]
+            return df.set_index(index_cols)
+
+            #original functionality 
+            #return df.set_index(df.columns.tolist()[:-2])
+
         elif self.ext == ".html":
             df = pd.read_html(self.path, *self.read_args, **self.read_kwargs)
             return df.set_index(df.columns.tolist()[:-2])
@@ -77,8 +94,22 @@ class DataFrameWrapper:
             column_labels = ""
         if len(column_labels) == 0:
             column_labels = "sum_w:sum_ww"
-        if len(index_labels.split(":")) < 3:
-            index_labels += ":nominal"
+
+        #number of index levels in MultiIndex
+        required_levels = 6
+
+        index_parts = index_labels.split(":")
+
+        #append default values ("nominal") until the length is 6
+        while len(index_parts) < required_levels:
+            index_parts.append("nominal")
+
+        #rebuild index_labels string with 6 parts
+        index_labels = ":".join(index_parts)
+        
+        #original functionality
+        #if len(index_labels.split(":")) < 3:
+            #index_labels += ":nominal"
 
         # Try to cast index_labels into self.df.index dtypes. Users can only
         # input index_labels as a string, but the dataframe might have other

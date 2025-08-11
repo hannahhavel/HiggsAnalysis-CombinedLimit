@@ -49,24 +49,24 @@ def convert_histograms_to_json(input_file, output_file=None):
         #process histograms (restructured "data" entry so it is a list of flat dictionaries (per DataFrameWrapper.py))
         for hist in histograms:
             name = hist.GetName()
-            #0 to N+2 to extract 'underflow' and 'overflow' bins
-            edges = [hist.GetXaxis().GetBinLowEdge(i) for i in range(0, hist.GetNbinsX() + 2)]
-            contents = [hist.GetBinContent(i) for i in range(0, hist.GetNbinsX() + 2)]
-            errors = [hist.GetBinError(i) for i in range(0, hist.GetNbinsX() + 2)]
+            nbins = hist.GetNbinsX()
+            for i in range(0, nbins + 2):  #0 to N+2 to extract 'underflow' and 'overflow' bins
+                low_edge = hist.GetXaxis().GetBinLowEdge(i)
+                high_edge = hist.GetXaxis().GetBinUpEdge(i)
+                content = hist.GetBinContent(i)
+                error = hist.GetBinError(i)
 
-            for i in range(len(contents)):
                 output_data["data"].append({
                     "name": name,
                     "type": "binned",
-                    "axes": [
-                        {
-                            "edges": edges,
-                            "name": "x"
-                        }
-                    ],
-                    "bin": i,  #bin index
-                    "content": contents[i],
-                    "error": errors[i]
+                    "axis_name": "x",
+                    "axis_low_edge": low_edge,
+                    "axis_high_edge": high_edge,
+                    "bin": i,
+                    "content": content,
+                    "error": error,
+                    "sum_w": content,
+                    "sum_ww": error**2
                 })
 
         #set output filename (if not given)

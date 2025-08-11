@@ -1,0 +1,18 @@
+imax 1
+jmax 1
+kmax 2
+---------------
+shapes * * simple-shapes-TH1_input.root $PROCESS
+shapes signal * simple-shapes-TH1_input.root $PROCESS$MASS 
+---------------
+bin bin1
+observation 85
+------------------------------
+bin             bin1       bin1
+process         signal     background
+process         0          1
+rate            10         100
+--------------------------------
+lumi     lnN    1.10       1.0
+bgnorm   lnN    1.00       1.3
+alpha  shape    -          1
