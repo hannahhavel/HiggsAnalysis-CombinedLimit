@@ -1,5 +1,3 @@
-#text2workspace.py
-
 #!/usr/bin/env python3
 
 import re
@@ -71,14 +69,6 @@ parser.add_option(
     default=False,
     action="store_true",
     help="Swap multipdf pdfs with their current index pdf",
-)
-parser.add_option(
-    "",
-    "--HS3",
-    dest="HS3",
-    action="store_true",
-    default=False,
-    help="Treat .json shapes as HS3 RooFit JSON (not as Pandas DataFrame through DataFrameWrapper.py)"
 )
 (options, args) = parser.parse_args()
 

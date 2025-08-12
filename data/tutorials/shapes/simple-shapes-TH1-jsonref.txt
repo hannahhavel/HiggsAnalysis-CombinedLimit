@@ -2,7 +2,7 @@ imax 1
 jmax 1
 kmax *
 ---------------
-shapes * * simple-shapes-TH1.json data:$PROCESS #json file has histograms nested under a "data" top-level key
+shapes * * simple-shapes-TH1_new2.json $PROCESS 
 ---------------
 bin bin1
 observation 85

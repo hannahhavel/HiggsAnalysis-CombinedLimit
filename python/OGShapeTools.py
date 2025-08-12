@@ -1,5 +1,3 @@
-#ShapeTools.py with HS3
-
 import os.path
 from collections import defaultdict
 from math import *
@@ -26,9 +24,8 @@ ROOT.RooArgSet.add = RooArgSet_add_patched
 
 
 class FileCache:
-    def __init__(self, basedir, options, maxsize=250):
+    def __init__(self, basedir, maxsize=250):
         self._basedir = basedir
-        self._options = options #patched: for access to options
         self._maxsize = maxsize
         self._files = {}
         self._hits = defaultdict(int)
@@ -48,20 +45,9 @@ class FileCache:
             if not os.path.exists(trueFName) and not os.path.isabs(trueFName) and os.path.exists(self._basedir + "/" + trueFName):
                 trueFName = self._basedir + "/" + trueFName
             # interpret file from extension - csv, json, html, pkl, xlsx, h5, parquet
-            
             filepath = trueFName.split(":")[0]
             filename, ext = os.path.splitext(filepath)
-
-            #patched: updated handling for HS3 JSON files directory
-            #avoids use of DataFrameWrapper.py
-            if ext == ".json" and getattr(self._options, "HS3", False):
-                #debugging
-                print(f"loading HS3 JSON file: {trueFName}") if self._options.verbose > 1 else None
-                ws = ROOT.RooWorkspace("w")
-                tool = ROOT.RooJSONFactoryWSTool(ws)
-                tool.importJSON(trueFName)
-                filehandle = ws
-            elif ext in [".csv", ".html", ".pkl", ".xlsx", ".h5", ".parquet"]:
+            if ext in [".csv", ".json", ".html", ".pkl", ".xlsx", ".h5", ".parquet"]:
                 filehandle = DataFrameWrapper(trueFName, ext)
             else:
                 # fallback to ROOT file
@@ -85,7 +71,7 @@ class ShapeBuilder(ModelBuilder):
         self.wsp = None
         self.extraImports = []
         self.norm_rename_map = {}
-        self._fileCache = FileCache(self.options.baseDir, self.options)
+        self._fileCache = FileCache(self.options.baseDir)
 
     ## ------------------------------------------
     ## -------- ModelBuilder interface ----------
@@ -724,24 +710,6 @@ class ShapeBuilder(ModelBuilder):
             finalNames = [fn.replace("$%s" % mpname, mpv) for fn in finalNames]
         file = self._fileCache[finalNames[0]]
         objname = finalNames[1]
-
-        #patched: if getShape() method finds a workspace it is handled
-        if isinstance(file, ROOT.RooWorkspace):
-            obj = file.obj(objname)
-            if not obj:
-                if allowNoSyst:
-                    return None
-                raise RuntimeError(f"Object {objname} not found in HS3 JSON file {finalNames[0]}")
-            
-            ret = obj.Clone("shape{}_{}_{}{}".format(
-                postFix, process, channel, "_" + syst if syst else ""))
-            
-            if self.options.verbose > 2:
-                print(f"import HS3 ({finalNames[0]},{objname}) -> {ret.GetName()}\n")
-            
-            _cache[(channel, process, syst)] = ret
-            return ret
-    
         if not file:
             raise RuntimeError(f"Cannot open file {finalNames[0]} (from pattern {names[0]})")
 

@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+
+
+        #!/usr/bin/env python
 
 import ROOT
 import json
@@ -47,6 +49,15 @@ def convert_workspace_to_json(input_file, output_file=None):
     if not root_file or root_file.IsZombie():
         raise RuntimeError(f"could not open {input_file}")
 
+
+   #CHANGED: try to get an existing RooWorkspace named "w"
+    ws = root_file.Get("w")
+    if ws and isinstance(ws, ROOT.RooWorkspace):
+        print("Found existing RooWorkspace 'w' in file, using it.")
+    else:
+        print("No RooWorkspace 'w' found in file, wrapping TH1 histograms into a new workspace.")
+
+
     ws = wrap_histograms_in_workspace(root_file)
 
     if not output_file:
@@ -73,6 +84,5 @@ if __name__ == "__main__":
     output_file = sys.argv[2] if len(sys.argv) > 2 else None
 
     convert_workspace_to_json(input_file, output_file)
-
 
 

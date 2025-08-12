@@ -1,101 +1,77 @@
-#convert_histograms.py
 #!/usr/bin/env python
 
-import ROOT #ROOT library
-import json #JSON file operations
+import ROOT
+import json
 import sys
 import os
 
-#find all TH1 histograms (recursively) in the ROOT file
-def find_histograms(root_file):
-    histograms = []
-    #in all directories
+#print JSON with formatting
+def format_json(file_path, indent=4):
+    try:
+        with open(file_path, "r") as file:
+            data = json.load(file)
+        with open(file_path, "w") as file:
+            json.dump(data, file, indent=indent, ensure_ascii=False)
+        print(f"successfully formatted: {file_path}")
+    except Exception as e:
+        print(f"error formatting: {e}")
+
+#wrap TH1 histograms into a RooWorkspace (recursively from all directories)
+def wrap_histograms_in_workspace(root_file):
+    ws = ROOT.RooWorkspace("w")
+    histogram_count = 0  #counter for summary
+
+    #get information from histograms
     def scan_directory(directory):
+        nonlocal histogram_count
         for key in directory.GetListOfKeys():
             obj = key.ReadObj()
             if obj.InheritsFrom(ROOT.TH1.Class()):
-                histograms.append(obj)
+                histogram_count += 1
+                xvar = ROOT.RooRealVar("x", "x",
+                                       obj.GetXaxis().GetXmin(),
+                                       obj.GetXaxis().GetXmax())
+                dh = ROOT.RooDataHist(obj.GetName(), obj.GetTitle(),
+                                      ROOT.RooArgList(xvar), obj)
+                getattr(ws, "import")(dh)
             elif obj.InheritsFrom(ROOT.TDirectory.Class()):
                 scan_directory(obj)
+
     scan_directory(root_file)
-    return histograms
+    print(f"converted {histogram_count} histograms.")
+    return ws
 
-#convert TH1 histograms to JSON
-def convert_histograms_to_json(input_file, output_file=None):
-    try:
-        root_file = ROOT.TFile.Open(input_file)
-        if not root_file or root_file.IsZombie():
-            raise RuntimeError(f"could not open {input_file}")
+#convert file to HS3 JSON
+def convert_workspace_to_json(input_file, output_file=None):
+    root_file = ROOT.TFile.Open(input_file)
+    if not root_file or root_file.IsZombie():
+        raise RuntimeError(f"could not open {input_file}")
 
-        #find all histograms
-        histograms = find_histograms(root_file)
-        if not histograms:
-            raise RuntimeError("no TH1 histograms found in file")
+    ws = wrap_histograms_in_workspace(root_file)
 
-        #HS3 metadata (printed at top of .json)
-        output_data = {
-            "metadata": {
-                "hs3_version": "0.2",
-                "packages": [  #added to avoid metadata error
-                    {
-                        "name": "ROOT",
-                        "version": ROOT.gROOT.GetVersion().split('/')[0]
-                    }
-                ]
-            },
-            "data": []
-        }
+    if not output_file:
+        base_name = os.path.splitext(os.path.basename(input_file))[0]
+        output_file = f"{base_name}.json"
 
-        #process histograms (restructured "data" entry so it is a list of flat dictionaries (per DataFrameWrapper.py))
-        for hist in histograms:
-            name = hist.GetName()
-            nbins = hist.GetNbinsX()
-            for i in range(0, nbins + 2):  #0 to N+2 to extract 'underflow' and 'overflow' bins
-                low_edge = hist.GetXaxis().GetBinLowEdge(i)
-                high_edge = hist.GetXaxis().GetBinUpEdge(i)
-                content = hist.GetBinContent(i)
-                error = hist.GetBinError(i)
+    #export JSON using HS3 tool
+    tool = ROOT.RooJSONFactoryWSTool(ws) #used in prototype
+    tool.exportJSON(output_file)
 
-                output_data["data"].append({
-                    "name": name,
-                    "type": "binned",
-                    "axis_name": "x",
-                    "axis_low_edge": low_edge,
-                    "axis_high_edge": high_edge,
-                    "bin": i,
-                    "content": content,
-                    "error": error,
-                    "sum_w": content,
-                    "sum_ww": error**2
-                })
+    format_json(output_file)
 
-        #set output filename (if not given)
-        if not output_file:
-            base_name = os.path.splitext(os.path.basename(input_file))[0]
-            output_file = f"{base_name}_converted.json"
+    print(f"exported file: {output_file}")
 
-        #write to output
-        with open(output_file, 'w') as f:
-            json.dump(output_data, f, indent=2)
-
-        print(f"successfully exported to {output_file}")
-        return output_data
-
-    except Exception as e:
-        print(f"error: {str(e)}", file=sys.stderr)
-        sys.exit(1)
-    finally:
-        if 'root_file' in locals():
-            root_file.Close()
+    root_file.Close()
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
+        #usage statement
         print("usage: python convert_histograms.py <input.root> [output.json]")
         sys.exit(1)
 
     input_file = sys.argv[1]
     output_file = sys.argv[2] if len(sys.argv) > 2 else None
 
-    convert_histograms_to_json(input_file, output_file)
+    convert_workspace_to_json(input_file, output_file)
 
 
