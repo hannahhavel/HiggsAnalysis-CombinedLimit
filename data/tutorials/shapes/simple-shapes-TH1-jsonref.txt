@@ -2,7 +2,7 @@ imax 1
 jmax 1
 kmax *
 ---------------
-shapes * * simple-shapes-TH1_new2.json $PROCESS 
+shapes * * simple-shapes-TH1_new2domain.json $PROCESS 
 ---------------
 bin bin1
 observation 85
