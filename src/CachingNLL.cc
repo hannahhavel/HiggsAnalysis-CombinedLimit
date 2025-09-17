@@ -682,11 +682,12 @@ cacheutils::CachingAddNLL::evaluate() const
                 *its = 1.0; // arbitrary number, to avoid bad logs
                 continue;
             }
-            if (gentleNegativePenalty_ && abs(weights_[its-bgs]) < 1e-2) {
-                std::cout << "WARNING: gentle underflow to " << *its << " in " << pdf_->GetName() << " for bin " << its-bgs << ", weight " << weights_[its-bgs] << std::endl; 
-                *its = 1.0; // skip the log
-                ret -= 25;  // add a penalty (negative since we flip 'ret' afterwards)
-                continue;
+            if (gentleNegativePenalty_ && std::abs(weights_[its - bgs]) < 1e-2) {
+              std::cout << "WARNING: gentle underflow to " << *its << " in " << pdf_->GetName() << " for bin "
+                        << its - bgs << ", weight " << weights_[its - bgs] << '\n';
+              *its = 1.0;  // skip the log
+              ret -= 25;   // add a penalty (negative since we flip 'ret' afterwards)
+              continue;
             }
             std::cout << "WARNING: underflow to " << *its << " in " << pdf_->GetName() << " for bin " << its-bgs << ", weight " << weights_[its-bgs] << std::endl; 
             if (!CachingSimNLL::noDeepLEE_) logEvalError("Number of events is negative or error"); else CachingSimNLL::hasError_ = true;
@@ -783,7 +784,7 @@ cacheutils::CachingAddNLL::setData(const RooAbsData &data)
             canBasicIntegrals_ = runtimedef::get("ADDNLL_ROOREALSUM_BASICINT");
             for (unsigned int ibin = 0, nbin = binWidths_.size(); ibin < nbin; ++ibin) {
                 double bc = bins.binCenter(ibin), dc = data_->get(ibin)->getRealValue(xvar->GetName());
-                //printf("bin %3d: center %+8.5f ( data %+8.5f , diff %+8.5f ), width %8.5f, data weight %10.5f, channel %s\n", ibin, bc, dc, abs(dc-bc)/bins.binWidth(ibin), bins.binWidth(ibin), data_->weight(), pdf_->GetName());
+                //printf("bin %3d: center %+8.5f ( data %+8.5f , diff %+8.5f ), width %8.5f, data weight %10.5f, channel %s\n", ibin, bc, dc, std::abs(dc-bc)/bins.binWidth(ibin), bins.binWidth(ibin), data_->weight(), pdf_->GetName());
                 binWidths_[ibin] = bins.binWidth(ibin);
                 if (std::abs(bc-dc) > 1e-5*binWidths_[ibin]) {
                     //printf("channel %s, for observable %s, bin %d mismatch: binning %+8.5f ( data %+8.5f , diff %+7.8f of width %8.5f\n",
@@ -828,35 +829,6 @@ void cacheutils::CachingAddNLL::setAnalyticBarlowBeeston(bool flag) {
 
     }
 }
-
-RooArgSet* 
-cacheutils::CachingAddNLL::getObservables(const RooArgSet* depList, Bool_t valueOnly) const 
-{
-    return new RooArgSet();
-}
-
-// ROOT 6.26 changed the signature of getParameters to avoid heap allocation,
-// and especially returning an owning pointer that people tend to forget to
-// delete.
-#if ROOT_VERSION_CODE < ROOT_VERSION(6,26,0)
-RooArgSet* 
-cacheutils::CachingAddNLL::getParameters(const RooArgSet* depList, Bool_t stripDisconnected) const 
-{
-    RooArgSet *ret = new RooArgSet(params_);
-    ret->add(catParams_);
-    return ret;
-}
-#else
-bool cacheutils::CachingAddNLL::getParameters(const RooArgSet* depList,
-                                              RooArgSet& outputSet,
-                                              bool stripDisconnected) const
-{
-    outputSet.add(params_);
-    outputSet.add(catParams_);
-    return true;
-}
-#endif
-
 
 cacheutils::CachingSimNLL::CachingSimNLL(RooSimultaneous *pdf, RooAbsData *data, const RooArgSet *nuis) :
     pdfOriginal_(pdf),
@@ -1269,12 +1241,6 @@ void cacheutils::CachingSimNLL::setAnalyticBarlowBeeston(bool flag) {
 
         }
     }
-}
-
-RooArgSet* 
-cacheutils::CachingSimNLL::getObservables(const RooArgSet* depList, Bool_t valueOnly) const 
-{
-    return new RooArgSet();
 }
 
 // ROOT 6.26 changed the signature of getParameters to avoid heap allocation,
