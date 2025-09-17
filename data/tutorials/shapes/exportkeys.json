@@ -1,0 +1,92 @@
+{
+    "SimpleGaussianConstraint": {
+        "type": "gaussian_dist",
+        "proxies": {
+            "x": "x",
+            "mean": "mean",
+            "sigma": "sigma"
+        }
+    },
+    "RooRecursiveFraction": {
+        "type": "roorecursivefraction_dist",
+        "proxies": {
+            "list": "list"
+        }
+    },
+    "AsymPow": {
+        "type": "CMS::asympow",
+        "proxies": {
+            "kappaLow": "kappaLow",
+            "kappaHigh": "kappaHigh",
+            "theta": "theta"
+        }
+    },
+    "FastVerticalInterpHistPdf2": {
+        "type": "CMS::fastverticalinterphistpdf2",
+        "proxies": {
+            "x": "x",
+            "coefList": "coefList"
+        }
+    },
+    "FastVerticalInterpHistPdf2D2": {
+        "type": "CMS::FastVerticalInterpHistPdf2D2",
+        "proxies": {
+            "x": "x",
+            "y": "y",
+            "coefList": "coefList"
+        }
+    },
+    "ProcessNormalization": {
+        "type": "CMS::process_normalization",
+        "proxies": {
+            "thetaList": "thetaList",
+            "asymmThetaList": "asymmThetaList",
+            "otherFactorList": "otherFactorList"
+        }
+    },
+    "RooggZZPdf_v2": {
+        "type": "CMS::ggZZ_background_dist",
+        "proxies": {
+            "m4l": "m4l",
+            "a0": "a0",
+            "a1": "a1",
+            "a2": "a2",
+            "a3": "a3",
+            "a4": "a4",
+            "a5": "a5",
+            "a6": "a6",
+            "a7": "a7",
+            "a8": "a8",
+            "a9": "a9"
+        }
+    },
+    "RooqqZZPdf_v2": {
+        "type": "CMS::qqZZ_background_dist",
+        "proxies": {
+            "m4l": "m4l",
+            "a0": "a0",
+            "a1": "a1",
+            "a2": "a2",
+            "a3": "a3",
+            "a4": "a4",
+            "a5": "a5",
+            "a6": "a6",
+            "a7": "a7",
+            "a8": "a8",
+            "a9": "a9",
+            "a10": "a10",
+            "a11": "a11",
+            "a12": "a12",
+            "a13": "a13"
+        }
+    },
+    "RooVoigtian": {
+        "type": "CMS::voigtian",
+        "proxies": {
+            "x": "x",
+            "mean": "mean",
+           "width": "width",
+           "sigma": "sigma"
+       }
+   }	
+}
