@@ -234,6 +234,7 @@ class ModelBuilder(ModelBuilderBase):
                         raise RuntimeError(f"No parameter '{rp}' found for extArg in workspace {wsn} from file {fin}")
                     self.out.safe_import(wstmp.arg(rp), *importargs)
                 else:
+                    #updated here
                     print(f"attempting to open: {fin}")  #debugging, starting process
                     try:
                         if fin.endswith('.json'):  #handling for JSON

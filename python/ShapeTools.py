@@ -1,3 +1,4 @@
+
 #ShapeTools.py with changes
 
 import os.path
@@ -64,7 +65,7 @@ class FileCache:
             elif ext in [".csv", ".html", ".pkl", ".xlsx", ".h5", ".parquet"]:
                 filehandle = DataFrameWrapper(trueFName, ext)
             else:
-                # fallback to ROOT file
+                #fallback to ROOT file
                 filehandle = ROOT.TFile.Open(trueFName)
             self._files[fname] = [filehandle, self._total]
         else:
@@ -727,7 +728,7 @@ class ShapeBuilder(ModelBuilder):
 
         #updated: if getShape() method finds a workspace it is handled
         if isinstance(file, ROOT.RooWorkspace):
-            # Strip "w:" prefix that Combine sometimes prepends
+            #strip "w:" prefix that Combine sometimes prepends
             lookup_name = objname
             if lookup_name.startswith("w:"):
                 lookup_name = lookup_name.split("w:", 1)[1]
