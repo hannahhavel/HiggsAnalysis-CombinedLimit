@@ -5,8 +5,8 @@ import json
 import sys
 import os
 
+#make JSON pretty
 def format_json(file_path, indent=2):
-    """Rewrites JSON with indentation."""
     try:
         with open(file_path, "r") as f:
             data = json.load(f)
@@ -16,8 +16,8 @@ def format_json(file_path, indent=2):
     except Exception as e:
         print(f"error formatting: {e}")
 
+#if workspaces exist in file, export full ws directly
 def convert_workspace_to_json(input_file, output_file=None, ws_name="w"):
-    """Exports the full RooWorkspace (all contents) to JSON without skimming."""
     root_file = ROOT.TFile.Open(input_file)
     if not root_file or root_file.IsZombie():
         raise RuntimeError(f"could not open {input_file}")
@@ -55,4 +55,3 @@ if __name__ == "__main__":
     ws_name = sys.argv[3] if len(sys.argv) > 3 else "w"
 
     convert_workspace_to_json(input_file, output_file, ws_name)
-

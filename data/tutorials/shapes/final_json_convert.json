@@ -1631,31 +1631,15 @@
     },
     {
     "axes": [{"name": "rmdj", "value": 9.44495}],
-    "entries": [[10.73764]],  
+    "entries": [[10.73764]],
     "name": "sig",
     "type": "unbinned"
-    }
-  ],
-  "distributions": [
-    {
-      "coefficients": [
-        "cc_a0",
-        "cc_a1",
-        "cc_a2"
-      ],
-      "name": "bkg",
-      "type": "chebychev_dist",
-      "x": "rmdj"
     },
     {
-      "coefficients": [
-        "cc_a0",
-        "cc_a1",
-        "cc_a2"
-      ],
-      "name": "sig",
-      "type": "chebychev_dist",
-      "x": "rmdj"
+    "axes": [{"name": "rmdj", "value": 9.44495}],
+    "entries": [[10.73764]],
+    "name": "bkg",
+    "type": "unbinned"
     }
   ],
   "domains": [

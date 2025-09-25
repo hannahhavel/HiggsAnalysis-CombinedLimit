@@ -4,15 +4,16 @@ import sys
 filename = sys.argv[1]
 f = ROOT.TFile.Open(filename)
 
+#print contents of a .root file
 def scan_workspace(ws, path=""):
     print(f"{path}: RooWorkspace")
-    # list all datasets (RooDataHist, RooDataSet)
+    #list all datasets (RooDataHist, RooDataSet)
     for d in ws.allData():
         print(f"{path}/{d.GetName()}: {d.ClassName()}")
-    # list all PDFs
+    #list all PDFs
     for p in ws.allPdfs():
         print(f"{path}/{p.GetName()}: {p.ClassName()}")
-    # list all variables
+    #list all variables
     for v in ws.allVars():
         print(f"{path}/{v.GetName()}: {v.ClassName()}")
 
