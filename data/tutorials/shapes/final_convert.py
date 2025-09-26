@@ -27,4 +27,3 @@ with open(temp_json_file, "r") as f:
 
 with open(output_file, "w") as f:
     json.dump(data, f, indent=2)
-

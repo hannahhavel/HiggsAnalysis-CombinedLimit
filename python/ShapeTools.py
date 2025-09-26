@@ -1468,4 +1468,3 @@ class ShapeBuilder(ModelBuilder):
                 # print "-- End --"
                 arg = ret
             return arg
-

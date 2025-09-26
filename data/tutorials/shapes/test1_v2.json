@@ -1628,25 +1628,33 @@
       ],
       "name": "data_obs",
       "type": "unbinned"
+    },
+    {
+    "axes": [{"name": "rmdj", "value": 9.44495}],
+    "entries": [[10.73764]],  
+    "name": "sig",
+    "type": "unbinned"
     }
   ],
   "distributions": [
     {
-      "coefList": [
+      "coefficients": [
         "cc_a0",
         "cc_a1",
         "cc_a2"
       ],
       "name": "bkg",
-      "type": "CMS::chebychev",
+      "type": "chebychev_dist",
       "x": "rmdj"
     },
     {
-      "mean": "MH",
+      "coefficients": [
+        "cc_a0",
+        "cc_a1",
+        "cc_a2"
+      ],
       "name": "sig",
-      "sigma": "vogian_sigma",
-      "type": "CMS::voigtian",
-      "width": "vogian_width",
+      "type": "chebychev_dist",
       "x": "rmdj"
     }
   ],
@@ -1677,16 +1685,6 @@
           "max": 40.0,
           "min": 8.0,
           "name": "rmdj"
-        },
-        {
-          "max": 1e+30,
-          "min": -1e+30,
-          "name": "vogian_sigma"
-        },
-        {
-          "max": 1e+30,
-          "min": -1e+30,
-          "name": "vogian_width"
         }
       ],
       "name": "default_domain",
@@ -1698,7 +1696,7 @@
     "packages": [
       {
         "name": "ROOT",
-        "version": "6.36.05"
+        "version": "6.37.01"
       }
     ]
   },
@@ -1706,16 +1704,6 @@
     "ROOT_internal": {
       "attributes": {
         "MH": {
-          "tags": [
-            "Constant"
-          ]
-        },
-        "vogian_sigma": {
-          "tags": [
-            "Constant"
-          ]
-        },
-        "vogian_width": {
           "tags": [
             "Constant"
           ]
@@ -1747,16 +1735,6 @@
           "const": true,
           "name": "MH",
           "value": 16.5
-        },
-        {
-          "const": true,
-          "name": "vogian_width",
-          "value": 0.2
-        },
-        {
-          "const": true,
-          "name": "vogian_sigma",
-          "value": 0.1
         }
       ]
     }

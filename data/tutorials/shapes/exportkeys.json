@@ -88,5 +88,12 @@
            "width": "width",
            "sigma": "sigma"
        }
-   }	
+  },
+  "RooChebychev": {
+    "type": "CMS::chebychev",
+    "proxies": {
+      "x": "x",
+      "coefList": "coefList"
+    }
+  }
 }
